@@ -1,11 +1,11 @@
 # Schedule Builder to ICS
 
-This is a simple script that converts Schedule Builder (CUNY) courses to ICS format so you can easily import them into your calendar. It includes the course name, time, location, and teachers. This script does not yet take into holidays into account.
+This is a simple script that converts Schedule Builder (CUNY) courses to ICS format so you can easily import them into your calendar. It includes the course name, time, location, and teachers. This script does not yet take holidays into account yet.
 
 ## Usage
 
-1. Go to the Schedule Builder page with your courses for the semester. <!-- ![Schedule Builder page](https://github.com/jonerrr/blob/[branch]/image.jpg?raw=true) -->
-2. Inspect element (right click and click Inspect) and go to the console tab on the top right (by default).
+1. Go to the Schedule Builder page with your courses for the semester. ![Schedule Builder page](https://github.com/jonerrr/sb-to-ics/blob/main/image.png?raw=true)
+2. Inspect element (right click and select Inspect) and click on the Console tab (located by default on the top right).
 3. Copy the script below (source code is in `script.js`, you should always be cautious of running scripts in your browser and verify it is safe).
 4. Paste the script into the browser console and hit enter. This will download a file called `class_schedule.ics` containing your schedule.
 5. Upload the file to your calendar.
