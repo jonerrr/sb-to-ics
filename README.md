@@ -2,6 +2,8 @@
 
 This is a simple script that converts Schedule Builder (CUNY) courses to ICS format so you can easily import them into your calendar. It includes the course name, time, location, and teachers. This script does not take holidays into account yet.
 
+**WARNING: This script does not take into account daylight savings (will be fixed in the future)**
+
 ## Usage
 
 1. Go to the Schedule Builder page with your courses for the semester. ![Schedule Builder page](https://github.com/jonerrr/sb-to-ics/blob/main/image.png?raw=true)
