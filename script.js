@@ -358,7 +358,7 @@ END:VTIMEZONE`;
     value = value.replace("METHOD:PUBLISH", `METHOD:PUBLISH\n${ny_vtimezone}`);
     // TODO: check that lines are not above 75 characters
     value = value.replaceAll("DTSTART:", "DTSTART;TZID=America/New_York:");
-    // value = value.replaceAll("EXDATE:", "EXDATE;TZID=America/New_York:");
+    value = value.replaceAll("EXDATE:", "EXDATE;TZID=America/New_York:");
 
     const ics_file = new File([value], "class_schedule.ics", {
       type: "text/calendar",
