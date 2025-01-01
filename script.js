@@ -252,19 +252,23 @@ END:VTIMEZONE`;
 
   const events = [];
 
-  //   const holidays = Object.values(
-  //     MM.termBundle[BB.activeState.term].holidayschedules
-  //   ).flatMap(({ holidays }) => {
-  //     return Object.keys(holidays).map((h) => {
-  //       const holiday_ymd = ymd(h);
-  //       return new Date(holiday_ymd.year, holiday_ymd.month, holiday_ymd.day);
-  //     });
-  //   });
+  // ko-KR is used to get the date in the format yyyy-mm-dd
+  const formatter = Intl.DateTimeFormat("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
 
-  //   const holiday_exdate_str = `EXDATE:${holidays
-  //     .map((h) => formatDateToICS(h, false))
-  //     .join(",")}`;
-  //   console.log(holiday_exdate_str);
+  const holidays = Object.values(
+    MM.termBundle[BB.activeState.term].holidayschedules
+  ).flatMap(({ holidays }) => {
+    return Object.keys(holidays).map((h) => {
+      const holiday_ymd = ymd(h);
+      return formatter
+        .format(new Date(holiday_ymd.year, holiday_ymd.month, holiday_ymd.day))
+        .replace(/\.\s?/g, "");
+    });
+  });
 
   BB.activeState.results[0].selPros.forEach((selPro) => {
     if (selPro.isChosen()) {
@@ -281,7 +285,6 @@ END:VTIMEZONE`;
         const dow = timeblock.day - 1;
         const start_ymd = ymd(timeblock.d1);
         const start_time = parse_time(timeblock.t1);
-        // console.log(start_ymd, start_time);
         const end_ymd = ymd(timeblock.d2);
         const end_time = parse_time(timeblock.t2);
 
@@ -313,23 +316,12 @@ END:VTIMEZONE`;
           end_time.hour,
           end_time.minute
         );
-        // console.log(end_dt, formatDateToICS(end_dt, false));
 
-        // const holiday_exdate_str = `EXDATE:${holidays
-        //   .filter((h) => h >= actual_start_dt && h <= end_dt)
-        //   .map((h) => formatDateToICS(h, false))
-        //   .join(",")}`;
-
-        // console.log(start_ymd, start_time, end_ymd, end_time, dow);
-
-        // const holiday_exdate_str = `EXDATE:${holidays
-        // 	.map((h) => formatDateToICS(h, false))
-        // 	.join(",")}`;
-        // console.log(new Date(actual_start_dt.toISOString()));
         const event = {
           title,
           description: class_data.teacher,
           location: timeblock_location,
+          exclusionDates: holidays,
           startInputType: "utc",
           startOutputType: "local",
           // months are not zero indexed for RRULE format
@@ -354,7 +346,9 @@ END:VTIMEZONE`;
 
     // add vtimezone to account for DST
     value = value.replace("METHOD:PUBLISH", `METHOD:PUBLISH\n${ny_vtimezone}`);
+    // TODO: check that lines are not above 75 characters
     value = value.replaceAll("DTSTART:", "DTSTART;TZID=America/New_York:");
+    // value = value.replaceAll("EXDATE:", "EXDATE;TZID=America/New_York:");
 
     const ics_file = new File([value], "class_schedule.ics", {
       type: "text/calendar",
