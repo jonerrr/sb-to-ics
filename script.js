@@ -253,20 +253,21 @@ END:VTIMEZONE`;
   const events = [];
 
   // ko-KR is used to get the date in the format yyyy-mm-dd
-  const formatter = Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
+  // const formatter = Intl.DateTimeFormat("ko-KR", {
+  //   year: "numeric",
+  //   month: "2-digit",
+  //   day: "2-digit",
+  // });
 
   const holidays = Object.values(
     MM.termBundle[BB.activeState.term].holidayschedules
   ).flatMap(({ holidays }) => {
     return Object.keys(holidays).map((h) => {
       const holiday_ymd = ymd(h);
-      return formatter
-        .format(new Date(holiday_ymd.year, holiday_ymd.month, holiday_ymd.day))
-        .replace(/\.\s?/g, "");
+      // return formatter
+      //   .format(new Date(holiday_ymd.year, holiday_ymd.month, holiday_ymd.day))
+      //   .replace(/\.\s?/g, "");
+      return new Date(holiday_ymd.year, holiday_ymd.month, holiday_ymd.day);
     });
   });
 
@@ -321,7 +322,16 @@ END:VTIMEZONE`;
           title,
           description: class_data.teacher,
           location: timeblock_location,
-          exclusionDates: holidays,
+          // exclusionDates: holidays,
+          // although the RFC says to support date format, almost all calendar programs require you to use a date-time where the time is the same as the start time.
+          exclusionDates: holidays.map((h) => {
+            h.setHours(
+              actual_start_dt.getHours(),
+              actual_start_dt.getMinutes(),
+              actual_start_dt.getSeconds()
+            );
+            return formatDateToICS(h, false);
+          }),
           startInputType: "utc",
           startOutputType: "local",
           // months are not zero indexed for RRULE format
